@@ -61,50 +61,75 @@ var (
 // Expr is a Go expression at the top-level in pgo.
 type Expr struct{ ast.Expr }
 
-func (*Expr) pgoNode() {}
+func (*Expr) pgoNode() {
+	_ = "STUB: not implemented"
 
-// StmtList is a list of statements at the top-level of a pgo file.
+	// StmtList is a list of statements at the top-level of a pgo file.
+	return
+}
+
 type StmtList struct {
 	List []ast.Stmt // inv: len > 0
 }
 
-func (*StmtList) pgoNode() {}
+func (*StmtList) pgoNode() {
+	_ = "STUB: not implemented"
 
-// Pos returns the start position of the statement list or NoPos if there are
-// no statements in it.
+	// Pos returns the start position of the statement list or NoPos if there are
+	// no statements in it.
+	return
+}
+
 func (l *StmtList) Pos() token.Pos {
-	return l.List[0].Pos()
+	_ = "STUB: not implemented"
+	return *
+
+	// End returns the position of the character immediately after this statement
+	// list, or NoPos if there are no statements in this list.
+	new(token.Pos)
 }
 
-// End returns the position of the character immediately after this statement
-// list, or NoPos if there are no statements in this list.
-func (l *StmtList) End() token.Pos {
-	return l.List[len(l.List)-1].End()
-}
+func (l *StmtList) End() token.Pos { _ = "STUB: not implemented"; return *new(token.Pos) }
 
 // FuncDecl is a Go function declaration at the top-level in pgo.
 type FuncDecl struct{ *ast.FuncDecl }
 
-func (*FuncDecl) pgoNode() {}
+func (*FuncDecl) pgoNode() {
+	_ = "STUB: not implemented"
 
-// GenDecl is a Go general declaration at the top-level in pgo.
+	// GenDecl is a Go general declaration at the top-level in pgo.
+	return
+}
+
 type GenDecl struct{ *ast.GenDecl }
 
-func (*GenDecl) pgoNode() {}
+func (*GenDecl) pgoNode() {
+	_ = "STUB: not implemented"
 
-// Dots is a "..." used as an expression.
-//
-// If used as a statement, Dots will be inside an ExprStmt.
+	// Dots is a "..." used as an expression.
+	//
+	// If used as a statement, Dots will be inside an ExprStmt.
+	return
+}
+
 type Dots struct {
 	ast.Expr
 
 	Dots token.Pos // position of dots
 }
 
-func (*Dots) pgoNode() {}
+func (*Dots) pgoNode() {
+	_ = "STUB: not implemented"
 
-// Pos returns the start position of "...".
-func (d *Dots) Pos() token.Pos { return d.Dots }
+	// Pos returns the start position of "...".
+	return
+}
 
-// End returns the position after "...".
-func (d *Dots) End() token.Pos { return d.Dots + 3 }
+func (d *Dots) Pos() token.Pos {
+	_ = "STUB: not implemented"
+
+	// End returns the position after "...".
+	return *new(token.Pos)
+}
+
+func (d *Dots) End() token.Pos { _ = "STUB: not implemented"; return *new(token.Pos) }

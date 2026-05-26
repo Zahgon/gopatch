@@ -21,13 +21,11 @@
 package engine
 
 import (
-	"errors"
 	"go/ast"
 	"go/token"
 	"reflect"
 
 	"github.com/uber-go/gopatch/internal/data"
-	"github.com/uber-go/gopatch/internal/goast"
 	"github.com/uber-go/gopatch/internal/pgo"
 )
 
@@ -44,76 +42,28 @@ type stmtSliceContainerMatcher struct {
 // match anywhere in the AST where a []ast.Stmt can be present. We'll use
 // stmtSliceContainerMatcher for this.
 func (c *matcherCompiler) compilePGoStmtList(slist *pgo.StmtList) Matcher {
-	var list []ast.Stmt
-	if len(slist.List) > 0 {
-		list = append(list, dotsStmt(c.patchStart))
-		list = append(list, slist.List...)
-		list = append(list, dotsStmt(c.patchEnd))
-	}
-	return stmtSliceContainerMatcher{
-		Stmts: c.compile(reflect.ValueOf(list)),
-	}
+	_ = "STUB: not implemented"
+	return *new(Matcher)
 }
 
 func (m stmtSliceContainerMatcher) Match(v reflect.Value, d data.Data, r Region) (data.Data, bool) {
-	t := v.Type()
-	if t.Kind() != reflect.Ptr {
-		return d, false
-	}
-
-	// Instead of copying individual fields of BlockStmt, CaseClause, and
-	// CommClause, we will match against the statements (present under
-	// .List in BlockStmt and .Body under CaseClause and CommClause) and
-	// make a shallow copy of all other attributes of the object, to be
-	// replicated in the Replacer.
-
-	v, t = v.Elem(), t.Elem()
-	var (
-		stmtField string
-
-		// Position of the end of the text right before statements
-		// start. For block statements, this will be the position of
-		// "{", for case clauses, it will be the position of ":".
-		stmtPreludeEnd token.Pos
-	)
-	switch t {
-	case goast.BlockStmtType:
-		stmtField = "List"
-		stmtPreludeEnd = r.Pos
-	case goast.CaseClauseType, goast.CommClauseType:
-		stmtField = "Body"
-		stmtPreludeEnd = token.Pos(v.FieldByName("Colon").Int())
-	default:
-		return d, false
-	}
-
-	var (
-		// Fields besides the one containing []Stmt.
-		fields []stmtListField
-
-		// Information about the field containing []Stmt.
-		stmtsField stmtListField
-	)
-	for i := 0; i < t.NumField(); i++ {
-		f := stmtListField{FieldIdx: i, Value: v.Field(i)}
-		if t.Field(i).Name == stmtField {
-			stmtsField = f
-		} else {
-			fields = append(fields, f)
-		}
-	}
-
-	r.Pos = stmtPreludeEnd + 1
-	return m.Stmts.Match(stmtsField.Value, data.WithValue(d, stmtListKey, stmtListData{
-		Type:         t,
-		StmtFieldIdx: stmtsField.FieldIdx,
-		OtherFields:  fields,
-		UnchangedRegion: Region{
-			Pos: r.Pos,
-			End: stmtPreludeEnd,
-		},
-	}), r)
+	_ = "STUB: not implemented"
+	return *new(data.Data), false
 }
+
+// Instead of copying individual fields of BlockStmt, CaseClause, and
+// CommClause, we will match against the statements (present under
+// .List in BlockStmt and .Body under CaseClause and CommClause) and
+// make a shallow copy of all other attributes of the object, to be
+// replicated in the Replacer.
+
+// Position of the end of the text right before statements
+// start. For block statements, this will be the position of
+// "{", for case clauses, it will be the position of ":".
+
+// Fields besides the one containing []Stmt.
+
+// Information about the field containing []Stmt.
 
 // stmtSliceContainerReplacer reproduces an AST node for which a statement
 // list was previously matched.
@@ -130,38 +80,16 @@ type stmtSliceContainerReplacer struct {
 // able to reproduce the original container for these statements (BlockStmt,
 // CaseClause, CommClause) as-is with only the statement list modified.
 func (c *replacerCompiler) compilePGoStmtList(slist *pgo.StmtList) Replacer {
-	var list []ast.Stmt
-	if len(slist.List) > 0 {
-		list = append(list, dotsStmt(c.patchStart))
-		list = append(list, slist.List...)
-		list = append(list, dotsStmt(c.patchEnd))
-	}
-	return stmtSliceContainerReplacer{
-		Stmts: c.compile(reflect.ValueOf(list)),
-	}
+	_ = "STUB: not implemented"
+	return *new(Replacer)
 }
 
 func (r stmtSliceContainerReplacer) Replace(d data.Data, cl Changelog, pos token.Pos) (reflect.Value, error) {
-	var sd stmtListData
-	if !data.Lookup(d, stmtListKey, &sd) {
-		return reflect.Value{}, errors.New("no statement matches found")
-	}
-
-	// Reproduce the original struct without setting Stmts.
-	node := reflect.New(sd.Type).Elem()
-	for _, f := range sd.OtherFields {
-		node.Field(f.FieldIdx).Set(f.Value)
-	}
-
-	stmts, err := r.Stmts.Replace(d, cl, sd.UnchangedRegion.End)
-	if err != nil {
-		return reflect.Value{}, err
-	}
-	node.Field(sd.StmtFieldIdx).Set(stmts)
-
-	cl.Unchanged(sd.UnchangedRegion.Pos, sd.UnchangedRegion.End)
-	return node.Addr(), nil
+	_ = "STUB: not implemented"
+	return *new(reflect.Value), nil
 }
+
+// Reproduce the original struct without setting Stmts.
 
 type _stmtListKey struct{}
 
@@ -197,6 +125,4 @@ type stmtListField struct {
 	Value reflect.Value
 }
 
-func dotsStmt(pos token.Pos) ast.Stmt {
-	return &ast.ExprStmt{X: &pgo.Dots{Dots: pos}}
-}
+func dotsStmt(pos token.Pos) ast.Stmt { _ = "STUB: not implemented"; return *new(ast.Stmt) }

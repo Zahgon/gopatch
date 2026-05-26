@@ -21,11 +21,9 @@
 package engine
 
 import (
-	"go/ast"
 	"reflect"
 
 	"github.com/uber-go/gopatch/internal/data"
-	"github.com/uber-go/gopatch/internal/goast"
 )
 
 // GenericNodeMatcher is the top-level matcher for ast.Node objects.
@@ -35,35 +33,18 @@ type GenericNodeMatcher struct {
 
 // compileGeneric compiles a Matcher for arbitrary values inside a Go AST.
 func (c *matcherCompiler) compileGeneric(v reflect.Value) (m Matcher) {
-	defer func() {
-		// Wrap with GenericNodeMatcher only if the type is a Go AST node.
-		if v.Type().Implements(goast.NodeType) {
-			m = GenericNodeMatcher{Matcher: m}
-		}
-	}()
+	_ = "STUB: not implemented"
 
-	switch v.Kind() {
-	case reflect.Ptr:
-		return c.compilePtr(v)
-	case reflect.Slice:
-		return c.compileSlice(v)
-	case reflect.Struct:
-		return c.compileStruct(v)
-	case reflect.Interface:
-		return c.compileInterface(v)
-	default:
-		return ValueMatcher{Type: v.Type(), Value: v.Interface()}
-	}
+	// Wrap with GenericNodeMatcher only if the type is a Go AST node.
+	return *new(Matcher)
 }
 
 // Match matches an ast.Node.
 func (m GenericNodeMatcher) Match(got reflect.Value, d data.Data, r Region) (data.Data, bool) {
+	_ = "STUB: not implemented"
 	// Collapse the region under consideration down to the region covered by
 	// this node.
-	if !got.IsNil() {
-		r = nodeRegion(got.Interface().(ast.Node))
-	}
-	return m.Matcher.Match(got, d, r)
+	return *new(data.Data), false
 }
 
 // PtrMatcher matches a non-nil pointer in the AST.
@@ -72,20 +53,15 @@ type PtrMatcher struct {
 }
 
 func (c *matcherCompiler) compilePtr(v reflect.Value) Matcher {
+	_ = "STUB: not implemented"
 	// If the value is nil, we don't need to build the PtrMatcher.
-	if v.IsNil() {
-		return nilMatcher
-	}
-
-	return PtrMatcher{Matcher: c.compile(v.Elem())}
+	return *new(Matcher)
 }
 
 // Match matches a non-nil pointer.
 func (m PtrMatcher) Match(got reflect.Value, d data.Data, r Region) (data.Data, bool) {
-	if got.Kind() != reflect.Ptr || got.IsNil() {
-		return d, false
-	}
-	return m.Matcher.Match(got.Elem(), d, r)
+	_ = "STUB: not implemented"
+	return *new(data.Data), false
 }
 
 // SliceMatcher matches a slice of values exactly.
@@ -97,31 +73,14 @@ type SliceMatcher struct {
 }
 
 func (c *matcherCompiler) compileSlice(v reflect.Value) Matcher {
-	if v.IsNil() {
-		return nilMatcher
-	}
-	matchers := make([]Matcher, v.Len())
-	for i := 0; i < v.Len(); i++ {
-		matchers[i] = c.compile(v.Index(i))
-	}
-	return SliceMatcher{Items: matchers}
+	_ = "STUB: not implemented"
+	return *new(Matcher)
 }
 
 // Match mathces a slice of values.
 func (m SliceMatcher) Match(got reflect.Value, d data.Data, r Region) (data.Data, bool) {
-	if got.Kind() != reflect.Slice || len(m.Items) != got.Len() {
-		return d, false
-	}
-
-	for i, im := range m.Items {
-		var ok bool
-		d, ok = im.Match(got.Index(i), d, r)
-		if !ok {
-			return d, false
-		}
-	}
-
-	return d, true
+	_ = "STUB: not implemented"
+	return *new(data.Data), false
 }
 
 // StructMatcher matches a struct.
@@ -133,32 +92,14 @@ type StructMatcher struct {
 }
 
 func (c *matcherCompiler) compileStruct(v reflect.Value) Matcher {
-	typ := v.Type()
-	fields := make([]Matcher, typ.NumField())
-
-	for i := 0; i < typ.NumField(); i++ {
-		fields[i] = c.compile(v.Field(i))
-	}
-
-	return StructMatcher{
-		Type:   typ,
-		Fields: fields,
-	}
+	_ = "STUB: not implemented"
+	return *new(Matcher)
 }
 
 // Match matches a struct.
 func (m StructMatcher) Match(got reflect.Value, d data.Data, r Region) (data.Data, bool) {
-	if m.Type != got.Type() {
-		return d, false
-	}
-	for i, f := range m.Fields {
-		var ok bool
-		d, ok = f.Match(got.Field(i), d, r)
-		if !ok {
-			return d, false
-		}
-	}
-	return d, true
+	_ = "STUB: not implemented"
+	return *new(data.Data), false
 }
 
 // InterfaceMatcher matches an interface value.
@@ -167,18 +108,14 @@ type InterfaceMatcher struct {
 }
 
 func (c *matcherCompiler) compileInterface(v reflect.Value) Matcher {
-	if v.IsNil() {
-		return nilMatcher
-	}
-	return InterfaceMatcher{Matcher: c.compile(v.Elem())}
+	_ = "STUB: not implemented"
+	return *new(Matcher)
 }
 
 // Match matches non-nil interface nalues.
 func (m InterfaceMatcher) Match(got reflect.Value, d data.Data, r Region) (data.Data, bool) {
-	if got.Kind() != reflect.Interface || got.IsNil() {
-		return d, false
-	}
-	return m.Matcher.Match(got.Elem(), d, r)
+	_ = "STUB: not implemented"
+	return *new(data.Data), false
 }
 
 // ValueMatcher matches a value as-is.
@@ -189,8 +126,6 @@ type ValueMatcher struct {
 
 // Match matches a value as-is.
 func (m ValueMatcher) Match(got reflect.Value, d data.Data, _ Region) (data.Data, bool) {
-	if m.Type != got.Type() {
-		return d, false
-	}
-	return d, m.Value == got.Interface()
+	_ = "STUB: not implemented"
+	return *new(data.Data), false
 }

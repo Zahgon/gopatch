@@ -21,12 +21,9 @@
 package engine
 
 import (
-	"errors"
-	"fmt"
 	"go/token"
 
 	"github.com/uber-go/gopatch/internal/parse"
-	"go.uber.org/multierr"
 )
 
 // Program is a collection of compiled changes.
@@ -36,8 +33,8 @@ type Program struct {
 
 // Compile compiles a parsed gopatch Program.
 func Compile(fset *token.FileSet, p *parse.Program) (*Program, error) {
-	c := newCompiler(fset)
-	return c.compileProgram(p), c.Err()
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 type compiler struct {
@@ -45,34 +42,17 @@ type compiler struct {
 	errors []error
 }
 
-func newCompiler(fset *token.FileSet) *compiler {
-	return &compiler{fset: fset}
-}
+func newCompiler(fset *token.FileSet) *compiler { _ = "STUB: not implemented"; return nil }
 
 // Convenience function to build error messages with positioning data.
-func (c *compiler) errf(pos token.Pos, msg string, args ...any) {
-	if len(args) > 0 {
-		msg = fmt.Sprintf(msg, args...)
-	}
-	if pos.IsValid() {
-		msg = fmt.Sprintf("%v: %v", c.fset.Position(pos), msg)
-	}
-	c.errors = append(c.errors, errors.New(msg))
-}
+func (c *compiler) errf(pos token.Pos, msg string, args ...any) { _ = "STUB: not implemented"; return }
 
 // Err collates all the errors encountered during compilation and returns
 // them.
-func (c *compiler) Err() error {
-	return multierr.Combine(c.errors...)
-}
+func (c *compiler) Err() error { _ = "STUB: not implemented"; return nil }
 
 // Compiles a Program.
 func (c *compiler) compileProgram(aprogram *parse.Program) *Program {
-	var p Program
-	for _, achange := range aprogram.Changes {
-		if change := c.compileChange(achange); change != nil {
-			p.Changes = append(p.Changes, change)
-		}
-	}
-	return &p
+	_ = "STUB: not implemented"
+	return nil
 }

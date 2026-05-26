@@ -23,14 +23,8 @@
 package section
 
 import (
-	"bytes"
-	"fmt"
 	"go/ast"
 	"go/token"
-	"strings"
-	"unicode"
-
-	"go.uber.org/multierr"
 )
 
 // Program is a single .patch file consisting of one or more changes.
@@ -63,19 +57,18 @@ type Change struct {
 var _ ast.Node = (*Change)(nil)
 
 // Pos returns the position at which this change begins.
-func (c *Change) Pos() token.Pos { return c.HeaderPos }
+func (c *Change) Pos() token.Pos {
+	_ = "STUB: not implemented"
 
-// End returns the position of the first character after this change.
-func (c *Change) End() token.Pos {
-	if len(c.Patch) > 0 {
-		return c.Patch[len(c.Patch)-1].End()
-	}
-
-	// An emty change is effectively a no-op but that's not relevant here.
-	// The End position for an empty change is when the second pair of "@@"s
-	// ends.
-	return c.AtPos + 2
+	// End returns the position of the first character after this change.
+	return *new(token.Pos)
 }
+
+func (c *Change) End() token.Pos { _ = "STUB: not implemented"; return *new(token.Pos) }
+
+// An emty change is effectively a no-op but that's not relevant here.
+// The End position for an empty change is when the second pair of "@@"s
+// ends.
 
 // Section is a section of the change.
 type Section []*Line
@@ -92,21 +85,22 @@ type Line struct {
 var _ ast.Node = (*Line)(nil)
 
 // Pos returns the position at which this line begins.
-func (l *Line) Pos() token.Pos { return l.StartPos }
+func (l *Line) Pos() token.Pos {
+	_ = "STUB: not implemented"
 
-// End returns the position of the character just past this line.
-func (l *Line) End() token.Pos { return l.StartPos + token.Pos(len(l.Text)) }
+	// End returns the position of the character just past this line.
+	return *new(token.Pos)
+}
+
+func (l *Line) End() token.Pos { _ = "STUB: not implemented"; return *new(token.Pos) }
 
 // Split splits a Program into sections.
 func Split(fset *token.FileSet, filename string, content []byte) (Program, error) {
-	file := fset.AddFile(filename, -1, len(content))
-	file.SetLinesForContent(content)
-
-	splitter := programSplitter{file: file, content: content}
-	splitter.next() // read the first line
-
-	return splitter.readProgram(), multierr.Combine(splitter.errors...)
+	_ = "STUB: not implemented"
+	return *new(Program), nil
 }
+
+// read the first line
 
 type programSplitter struct {
 	file    *token.File // file to feed newline information
@@ -125,168 +119,75 @@ type programSplitter struct {
 }
 
 // Posts an error message with positional information.
-func (p *programSplitter) errf(off int, msg string, args ...any) {
-	if len(args) > 0 {
-		msg = fmt.Sprintf(msg, args...)
-	}
-
-	pos := p.file.Pos(off)
-	p.errors = append(p.errors, fmt.Errorf("%v: %v", p.file.Position(pos), msg))
-}
+func (p *programSplitter) errf(off int, msg string, args ...any) { _ = "STUB: not implemented"; return }
 
 // Skips to the end of line. This may be a newline character or EOF.
-func (p *programSplitter) skipUntilEOL() {
-	for ; p.offset < len(p.content); p.offset++ {
-		if p.content[p.offset] == '\n' {
-			return
-		}
-	}
-}
+func (p *programSplitter) skipUntilEOL() { _ = "STUB: not implemented"; return }
 
 // Advances the scanner to the next non-comment line and collects the last comments.
 func (p *programSplitter) next() {
-	p.lastComments = nil // setting last comments to empty string whenever encounter non comment line
-	for ; p.offset < len(p.content); p.offset++ {
-		p.startOffset = p.offset
-		p.skipUntilEOL()
-
-		p.text = p.content[p.startOffset:p.offset]
-		p.pos = p.file.Pos(p.startOffset)
-		if !isComment(p.text) {
-			p.offset++
-			return
-		}
-		p.lastComments = append(p.lastComments, string(bytes.TrimSpace(p.text[1:])))
-	}
-
-	// Reached EOF.
-	p.pos = token.NoPos
-	p.text = nil
-	p.eof = true
+	_ = "STUB: not implemented"
+	// setting last comments to empty string whenever encounter non comment line
+	return
 }
+
+// Reached EOF.
 
 // Comments are supported only on their own lines.
-func isComment(s []byte) bool {
-	s = bytes.TrimLeftFunc(s, unicode.IsSpace)
-	return len(s) > 0 && s[0] == '#'
-}
+func isComment(s []byte) bool { _ = "STUB: not implemented"; return false }
 
-func (p *programSplitter) readProgram() Program {
-	var prog Program
-	for !p.eof {
-		prog = append(prog, p.readChange())
-	}
-	if len(prog) == 0 {
-		p.errf(p.offset, "unexpected EOF, at least one change is required")
-	}
-	return prog
-}
+func (p *programSplitter) readProgram() Program { _ = "STUB: not implemented"; return *new(Program) }
 
 // Read and return a Change, or nil if EOF was reached.
 func (p *programSplitter) readChange() *Change {
+	_ = "STUB: not implemented"
 	// Can't use a struct literal here because readName and readMeta advance
 	// p.pos between HeaderPos and AtPos.
-	var c Change
-	c.Comments = p.lastComments
-	c.HeaderPos = p.pos
-	c.Name = p.readName()
-	c.Meta = p.readMeta()
-	c.AtPos = p.pos
-	c.Patch = p.readPatch()
-	return &c
+	return nil
 }
 
 // Reads the name of a change.
-func (p *programSplitter) readName() string {
-	text := string(p.text)
-	defer p.next()
+func (p *programSplitter) readName() string { _ = "STUB: not implemented"; return "" }
 
-	switch {
-	case text == "@@":
-		// unnamed
-	case len(text) > 2 && text[0] == '@' && text[len(text)-1] == '@':
-		// named
+// unnamed
 
-		name := text[1:]          // leading @
-		name = name[:len(name)-1] // trailing @
+// named
 
-		// Number of bytes shaved off the front of text. We'll use this to
-		// mark the position in the error message in case of an invalid name.
-		shift := 1 // leading @
+// leading @
+// trailing @
 
-		// Manually trim the left so that we can keep track of the number of
-		// bytes we're shifting.
-		if idx := strings.IndexFunc(name, notIsSpace); idx >= 0 {
-			name = name[idx:]
-			shift += idx
-		}
+// Number of bytes shaved off the front of text. We'll use this to
+// mark the position in the error message in case of an invalid name.
+// leading @
 
-		name = strings.TrimRightFunc(name, unicode.IsSpace)
-
-		i, ch, ok := validateChangeName(name)
-		if ok {
-			return name
-		}
-
-		p.errf(p.startOffset+shift+i,
-			"invalid name: must be a valid Go identifier: unexpected character %q", ch)
-	default:
-		p.errf(p.startOffset, `unexpected %q, expected "@@" or "@ change_name @"`, text)
-	}
-	return ""
-}
+// Manually trim the left so that we can keep track of the number of
+// bytes we're shifting.
 
 // Reads the metavariables section of the change.
-func (p *programSplitter) readMeta() Section {
-	var s Section
-	for ; !p.eof; p.next() {
-		if len(p.text) == 2 && p.text[0] == '@' && p.text[1] == '@' {
-			return s
-		}
-		s = append(s, &Line{StartPos: p.pos, Text: p.text})
-	}
-
-	p.errf(p.offset, `unexpected EOF, expected "@@"`)
-	return nil
-}
+func (p *programSplitter) readMeta() Section { _ = "STUB: not implemented"; return *new(Section) }
 
 // Reads the patch section of a change, stopping when a new change is
 // encountered or the end of the file is reached.
 func (p *programSplitter) readPatch() Section {
-	p.next() // skip past "@@" marking the end of metavariables section
-
-	var s Section
-	for ; !p.eof; p.next() {
-		if len(p.text) > 0 && p.text[0] == '@' {
-			// new change begins
-			break
-		}
-		s = append(s, &Line{StartPos: p.pos, Text: p.text})
-	}
-	return s
+	_ = "STUB: not implemented"
+	// skip past "@@" marking the end of metavariables section
+	return *new(Section)
 }
+
+// new change begins
 
 // Validates that the given non-empty string is a valid Go identifier. If the
 // name is invalid, the first invalid character and the index at which it
 // occurs is returned.
 func validateChangeName(s string) (i int, ch rune, ok bool) {
-	for i, ch := range s {
+	_ = "STUB: not implemented"
+	return 0,
+
 		// Only letters and underscores are allowed.
-		if unicode.IsLetter(ch) || ch == '_' {
-			continue
-		}
-
-		// ...unless this is past the first character, in which case numbers
-		// are allowed too.
-		if i > 0 && unicode.IsDigit(ch) {
-			continue
-		}
-
-		return i, ch, false
-	}
-	return 0, 0, true
+		0, false
 }
 
-func notIsSpace(ch rune) bool {
-	return !unicode.IsSpace(ch)
-}
+// ...unless this is past the first character, in which case numbers
+// are allowed too.
+
+func notIsSpace(ch rune) bool { _ = "STUB: not implemented"; return false }

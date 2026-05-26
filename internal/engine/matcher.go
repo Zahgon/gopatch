@@ -26,8 +26,6 @@ import (
 	"reflect"
 
 	"github.com/uber-go/gopatch/internal/data"
-	"github.com/uber-go/gopatch/internal/goast"
-	"github.com/uber-go/gopatch/internal/pgo"
 )
 
 // Region denotes the portion of the code being matched, i.e. the start and end
@@ -35,9 +33,7 @@ import (
 type Region struct{ Pos, End token.Pos }
 
 // nodeRegion returns the Region occupied by a given node.
-func nodeRegion(n ast.Node) Region {
-	return Region{Pos: n.Pos(), End: n.End()}
-}
+func nodeRegion(n ast.Node) Region { _ = "STUB: not implemented"; return *new(Region) }
 
 // Matcher matches values in a Go AST. It is built from the "-" portion of a
 // patch.
@@ -63,67 +59,36 @@ type matcherCompiler struct {
 }
 
 func newMatcherCompiler(fset *token.FileSet, meta *Meta, patchStart, patchEnd token.Pos) *matcherCompiler {
-	return &matcherCompiler{
-		fset:       fset,
-		meta:       meta,
-		patchStart: patchStart,
-		patchEnd:   patchEnd,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *matcherCompiler) compile(v reflect.Value) Matcher {
-	switch v.Type() {
-	case goast.IdentPtrType:
-		return c.compileIdent(v)
-	case goast.StmtSliceType:
-		return c.compileSliceDots(v, func(n ast.Node) bool {
-			es, ok := n.(*ast.ExprStmt)
-			if ok {
-				_, ok = es.X.(*pgo.Dots)
-			}
-			return ok
-		})
-	case goast.ExprSliceType:
-		return c.compileSliceDots(v, func(n ast.Node) bool {
-			_, ok := n.(*pgo.Dots)
-			return ok
-		})
-	case goast.FieldPtrSliceType:
-		// TODO(abg): pgo.Parse should probably replace this with a DotsField.
-		return c.compileSliceDots(v, func(n ast.Node) bool {
-			f, ok := n.(*ast.Field)
-			if ok {
-				_, ok = f.Type.(*pgo.Dots)
-			}
-			return ok
-		})
-	case goast.ForStmtPtrType:
-		return c.compileForStmt(v)
-
-		// TODO: Dedupe
-	case goast.CommentGroupPtrType:
-		// Comments shouldn't affect match.
-		return successMatcher
-	case goast.ObjectPtrType:
-		// Ident.Obj forms a cycle. We'll consider Object pointers to always
-		// match because the entites they point to will be matched separately
-		// anyway.
-		return successMatcher
-	case goast.PosType:
-		return c.compilePosMatcher(v)
-	}
-
-	return c.compileGeneric(v)
+	_ = "STUB: not implemented"
+	return *new(Matcher)
 }
+
+// TODO(abg): pgo.Parse should probably replace this with a DotsField.
+
+// TODO: Dedupe
+
+// Comments shouldn't affect match.
+
+// Ident.Obj forms a cycle. We'll consider Object pointers to always
+// match because the entites they point to will be matched separately
+// anyway.
 
 type matcherFunc func(reflect.Value) bool
 
 func (f matcherFunc) Match(v reflect.Value, d data.Data, _ Region) (data.Data, bool) {
-	return d, f(v)
+	_ = "STUB: not implemented"
+	return *
+
+	// nilMatcher is a Matcher that only matches nil values.
+	new(data.Data), false
 }
 
 var (
-	// nilMatcher is a Matcher that only matches nil values.
 	nilMatcher Matcher = matcherFunc(func(got reflect.Value) bool { return got.IsNil() })
 
 	// successMatcher always return true.

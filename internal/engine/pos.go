@@ -43,10 +43,8 @@ type PosMatcher struct {
 }
 
 func (c *matcherCompiler) compilePosMatcher(v reflect.Value) Matcher {
-	return PosMatcher{
-		Fset: c.fset,
-		Pos:  v.Interface().(token.Pos),
-	}
+	_ = "STUB: not implemented"
+	return *new(Matcher)
 }
 
 // Match matches a position in a file.
@@ -54,12 +52,8 @@ func (c *matcherCompiler) compilePosMatcher(v reflect.Value) Matcher {
 // If the position matches and is valid, this records this match in Data for
 // later retrieval.
 func (m PosMatcher) Match(v reflect.Value, d data.Data, _ Region) (data.Data, bool) {
-	got := v.Interface().(token.Pos)
-	ok := m.Pos.IsValid() == got.IsValid()
-	if ok {
-		d = pushPosMatch(m.Fset, d, m.Pos, got)
-	}
-	return d, ok
+	_ = "STUB: not implemented"
+	return *new(data.Data), false
 }
 
 // PosReplacer replaces token.Pos fields.
@@ -73,10 +67,8 @@ type PosReplacer struct {
 }
 
 func (c *replacerCompiler) compilePosReplacer(v reflect.Value) Replacer {
-	return PosReplacer{
-		Fset: c.fset,
-		Pos:  v.Interface().(token.Pos),
-	}
+	_ = "STUB: not implemented"
+	return *new(Replacer)
 }
 
 // TODO DATA POSITION NEEDS TO BE MUTABLE. SEND POSITIONS UP FOR GENERATED
@@ -84,18 +76,12 @@ func (c *replacerCompiler) compilePosReplacer(v reflect.Value) Replacer {
 
 // Replace replaces position nodes.
 func (r PosReplacer) Replace(d data.Data, cl Changelog, pos token.Pos) (reflect.Value, error) {
-	if !r.Pos.IsValid() {
-		return reflect.ValueOf(r.Pos), nil
-	}
-
-	// For positions, use the position associated with this item in the match
-	// data, falling back to the most recent position recorded in Data.
-	if matchedPos := lookupPosMatch(r.Fset, d, r.Pos); matchedPos.IsValid() {
-		pos = matchedPos
-	}
-
-	return reflect.ValueOf(pos), nil
+	_ = "STUB: not implemented"
+	return *new(reflect.Value), nil
 }
+
+// For positions, use the position associated with this item in the match
+// data, falling back to the most recent position recorded in Data.
 
 type posMatchKey struct {
 	Line   int
@@ -104,23 +90,17 @@ type posMatchKey struct {
 
 // Records a position match. Both positions MUST be valid.
 func pushPosMatch(fset *token.FileSet, d data.Data, patchPos, matchedPos token.Pos) data.Data {
+	_ = "STUB: not implemented"
 	// TODO(abg): This can be cheaper if the positions in the PGo AST point
 	// back to the patch file rather than the intermediate files.
-
-	p := fset.Position(patchPos)
-	return data.WithValue(d, posMatchKey{
-		Line:   p.Line,
-		Column: p.Column,
-	}, matchedPos)
+	return *new(data.Data)
 }
 
 // Retrieves the position associated with the given patch position or an
 // invalid position if none.
 func lookupPosMatch(fset *token.FileSet, d data.Data, patchPos token.Pos) (pos token.Pos) {
-	p := fset.Position(patchPos)
-	_ = data.Lookup(d, posMatchKey{
-		Line:   p.Line,
-		Column: p.Column,
-	}, &pos) // TODO(abg): Handle !ok
-	return
+	_ = "STUB: not implemented"
+	return *new(token.Pos)
 }
+
+// TODO(abg): Handle !ok

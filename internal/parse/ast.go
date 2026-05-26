@@ -92,15 +92,14 @@ type VarDecl struct {
 var _ ast.Node = (*VarDecl)(nil)
 
 // Pos returns the position at which this declaration starts.
-func (d *VarDecl) Pos() token.Pos { return d.VarPos }
+func (d *VarDecl) Pos() token.Pos {
+	_ = "STUB: not implemented"
 
-// End returns the position of the next character after this declaration.
-func (d *VarDecl) End() token.Pos {
-	if d.Type != nil {
-		return d.Type.End()
-	}
-	return token.NoPos
+	// End returns the position of the next character after this declaration.
+	return *new(token.Pos)
 }
+
+func (d *VarDecl) End() token.Pos { _ = "STUB: not implemented"; return *new(token.Pos) }
 
 // Patch is the patch portion of the change containing the unified diff of the
 // match/transformation.
@@ -116,7 +115,11 @@ type Patch struct {
 var _ ast.Node = (*Patch)(nil)
 
 // Pos returns the position at which this patch begins.
-func (p *Patch) Pos() token.Pos { return p.StartPos }
+func (p *Patch) Pos() token.Pos {
+	_ = "STUB: not implemented"
 
-// End returns the position immediately after this patch.
-func (p *Patch) End() token.Pos { return p.EndPos }
+	// End returns the position immediately after this patch.
+	return *new(token.Pos)
+}
+
+func (p *Patch) End() token.Pos { _ = "STUB: not implemented"; return *new(token.Pos) }

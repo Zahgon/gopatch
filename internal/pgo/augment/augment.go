@@ -50,27 +50,43 @@ type Dots struct {
 	Named bool
 }
 
-func (*Dots) augmentation() {}
+func (*Dots) augmentation() {
+	_ = "STUB: not implemented"
 
-// Start offset of Dots.
-func (d *Dots) Start() int { return d.DotsStart }
+	// Start offset of Dots.
+	return
+}
 
-// End offset of Dots.
-func (d *Dots) End() int { return d.DotsEnd }
+func (d *Dots) Start() int {
+	_ = "STUB: not implemented"
 
-// FakePackage is a fake package clause included in the code. This is needed
-// if the source didn't contain a package clause.
+	// End offset of Dots.
+	return 0
+}
+
+func (d *Dots) End() int {
+	_ = "STUB: not implemented"
+
+	// FakePackage is a fake package clause included in the code. This is needed
+	// if the source didn't contain a package clause.
+	return 0
+}
+
 type FakePackage struct {
 	PackageStart int // position of "package" keyword
 }
 
-func (*FakePackage) augmentation() {}
+func (*FakePackage) augmentation() {
+	_ = "STUB: not implemented"
 
-// Start offset for FakePackage.
-func (p *FakePackage) Start() int { return p.PackageStart }
+	// Start offset for FakePackage.
+	return
+}
+
+func (p *FakePackage) Start() int { _ = "STUB: not implemented"; return 0 }
 
 // End offset for FakePackage. This is meaningless for FakePackage.
-func (p *FakePackage) End() int { return p.PackageStart }
+func (p *FakePackage) End() int { _ = "STUB: not implemented"; return 0 }
 
 // FakeFunc is a fake function block generated in the code. This is needed if
 // the source didn't open with a valid top-level declaration.
@@ -79,22 +95,30 @@ type FakeFunc struct {
 	Braces    bool // whether a { ... } was added
 }
 
-func (*FakeFunc) augmentation() {}
+func (*FakeFunc) augmentation() {
+	_ = "STUB: not implemented"
 
-// Start offset for FakeFunc.
-func (f *FakeFunc) Start() int { return f.FuncStart }
+	// Start offset for FakeFunc.
+	return
+}
 
-// End offset for FakeFunc. This is meaningless for FakeFunc.
-func (f *FakeFunc) End() int { return f.FuncStart }
+func (f *FakeFunc) Start() int {
+	_ = "STUB: not implemented"
 
-// Augment takes the provided pgo syntax and returns valid Go syntax, a list
-// of augmentations made to it, and position adjustments required in the
-// parsed AST.
+	// End offset for FakeFunc. This is meaningless for FakeFunc.
+	return 0
+}
+
+func (f *FakeFunc) End() int {
+	_ = "STUB: not implemented"
+
+	// Augment takes the provided pgo syntax and returns valid Go syntax, a list
+	// of augmentations made to it, and position adjustments required in the
+	// parsed AST.
+	return 0
+}
+
 func Augment(src []byte) ([]byte, []Augmentation, []PosAdjustment, error) {
-	augs, err := find(src)
-	if err != nil {
-		return nil, nil, nil, err
-	}
-	src, adjs := rewrite(src, augs)
-	return src, augs, adjs, nil
+	_ = "STUB: not implemented"
+	return nil, nil, nil, nil
 }

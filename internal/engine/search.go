@@ -21,13 +21,11 @@
 package engine
 
 import (
-	"fmt"
 	"go/ast"
 	"go/token"
 	"reflect"
 
 	"github.com/uber-go/gopatch/internal/data"
-	"golang.org/x/tools/go/ast/astutil"
 )
 
 // SearchResult contains information about search results found by a
@@ -71,28 +69,12 @@ type SearchMatcher struct {
 
 // Match runs the matcher on the provided ast.Node.
 func (m SearchMatcher) Match(got reflect.Value, d data.Data, _ Region) (data.Data, bool) {
-	n, ok := got.Interface().(ast.Node)
-	if !ok {
-		return d, false
-	}
-
-	var results []*SearchResult
-	astutil.Apply(n, func(cursor *astutil.Cursor) bool {
-		n := cursor.Node()
-		if n == nil {
-			return false
-		}
-
-		if r := m.Search(cursor, m.Matcher, d); r != nil {
-			results = append(results, r)
-			return false
-		}
-
-		return true // keep looking
-	}, nil /* post func */)
-
-	return pushSearchResults(d, got, results), len(results) > 0
+	_ = "STUB: not implemented"
+	return *new(data.Data), false
 }
+
+// keep looking
+/* post func */
 
 // SearchReplacer replaces nodes found by a SearchMatcher.
 type SearchReplacer struct {
@@ -101,38 +83,16 @@ type SearchReplacer struct {
 
 // Replace replaces nodes found by a SearchMatcher.
 func (r SearchReplacer) Replace(d data.Data, cl Changelog, pos token.Pos) (reflect.Value, error) {
-	root, results := lookupSearchResults(d)
-	if len(results) == 0 {
-		return root, nil
-	}
-
-	for _, m := range results {
-		v := reflect.Indirect(reflect.ValueOf(m.parent)).FieldByName(m.name)
-		if !v.IsValid() {
-			// This is a bug in our code.
-			panic(fmt.Sprintf("%q is not a field of %T", m.name, m.parent))
-		}
-
-		if m.index >= 0 {
-			v = v.Index(m.index)
-		}
-
-		give, err := r.Replacer.Replace(m.data, cl, m.region.Pos)
-		if err != nil {
-			return reflect.Value{}, err
-		}
-
-		// If the generated value isn't assignable to the target, the match
-		// was too eager. For example, trying to place "foo.Bar"
-		// (SelectorExpr) where only an identifier is allowed (in a variable
-		// declaration name, for example).
-		if give.Type().AssignableTo(v.Type()) {
-			v.Set(give)
-		}
-	}
-
-	return root, nil
+	_ = "STUB: not implemented"
+	return *new(reflect.Value), nil
 }
+
+// This is a bug in our code.
+
+// If the generated value isn't assignable to the target, the match
+// was too eager. For example, trying to place "foo.Bar"
+// (SelectorExpr) where only an identifier is allowed (in a variable
+// declaration name, for example).
 
 type _searchResultKey struct{}
 
@@ -144,14 +104,13 @@ type searchResultData struct {
 }
 
 func pushSearchResults(d data.Data, root reflect.Value, results []*SearchResult) data.Data {
-	return data.WithValue(d, searchResultKey, searchResultData{
-		Root:    root,
-		Results: results,
-	})
+	_ = "STUB: not implemented"
+	return *new(data.Data)
 }
 
 func lookupSearchResults(d data.Data) (root reflect.Value, results []*SearchResult) {
-	var sr searchResultData
-	_ = data.Lookup(d, searchResultKey, &sr) // TODO(abg): Handle !ok
-	return sr.Root, sr.Results
+	_ = "STUB: not implemented"
+	return *new(reflect.Value), nil
 }
+
+// TODO(abg): Handle !ok
